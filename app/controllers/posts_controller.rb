@@ -7,6 +7,11 @@ class PostsController < ApplicationController
     @post = Post.new
   end
 
+  def edit
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+  end
+
   def create
     @group = Group.find(params[:group_id])
     @post = Post.new(post_params)
@@ -19,11 +24,26 @@ class PostsController < ApplicationController
       render :new
     end
   end
-  
-  before_action :authenticate_user!
-  def index
-    @posts = current_user.posts
+
+  def update
+    @group = Group.find(params[:group_id])
+    @post = Post.find(params[:id])
+    if @post.update(post_params)
+      redirect_to group_path, notice: "Update Success"
+    else
+      render :edit
+    end
   end
+
+  def destroy
+    @group = Group.find(params[:group_id])
+    @post  = Post.find(params[:id])
+    @post.destroy
+    flash[:alert] = "Group deleted"
+    redirect_to groups_path
+  end
+
+
 
   private
 
